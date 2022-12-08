@@ -1,383 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/index.css" />
+    <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
+    <title>The search service</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/index.css" />
-  <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
-  <title>The search service</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: RGBA;
+        min-height: 100vh;
+      }
 
-  <style>
-    body {
-      background-color: RGBA;
-      min-height: 100vh;
-    }
+      .title {
+        font-weight: 800;
+        font-size: 5rem;
+        font-family: "Black Han Sans", sans-serif;
+      }
 
-    .title {
-      font-weight: 800;
-      font-size: 5rem;
-      font-family: 'Black Han Sans', sans-serif;
-    }
+      a:link {
+        text-decoration: none;
+        color: rgb(31, 1, 58);
+      }
 
-    a:link {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
+      a:visited {
+        text-decoration: none;
+        color: rgb(31, 1, 58);
+      }
 
-    a:visited {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
+      a:hover {
+        text-decoration: none;
+        color: black;
+      }
 
-    a:hover {
-      text-decoration: none;
-      color: black;
-    }
+      a:active {
+        text-decoration: none;
+        color: rgb(31, 1, 58);
+      }
 
-    a:active {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
+      .carousel {
+        width: 650px;
+        height: 400px;
+      }
 
-    .carousel {
-      width: 650px;
-      height: 400px;
-    }
+      .imageblock {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #eaeaea;
+        padding: 0px;
 
-    .imageblock {
-      max-width: 100%;
-      height: auto;
-      border: 2px solid #eaeaea;
-      padding: 0px;
+        cursor: pointer;
+      }
 
-      cursor: pointer
-    }
+      .review-card {
+        position: static;
+        float: center;
+        height: auto;
+        width: 1000px;
+        margin-top: 10px;
+        margin-left: 10px;
+        top: 250px;
+        border: 4px solid black;
+        overflow: auto;
+      }
 
-    .review-card {
-      position: static;
-      float: center;
-      height: auto;
-      width: 1000px;
-      margin-top: 10px;
-      margin-left: 10px;
-      top: 250px;
-      border: 4px solid black;
-      overflow: auto;
-    }
+      .name {
+        position: relative;
+        text-align: center;
+        font-weight: bolder;
+        margin: 10px auto;
+        height: auto;
+        width: auto;
+      }
 
-    .name {
-      position: relative;
-      text-align: center;
-      font-weight: bolder;
-      margin: 10px auto;
-      height: auto;
-      width: auto;
-    }
+      .img {
+        position: relative;
+        float: right;
+        margin-top: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        height: auto;
+        width: auto;
+      }
 
-    .img {
-      position: relative;
-      float: right;
-      margin-top: 10px;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      height: auto;
-      width: auto;
-    }
+      .review {
+        position: relative;
+        float: left;
+        margin: 10px 10px 20px 10px;
+        height: auto;
+        width: 50%;
+        border: 2px solid black;
+        margin-bottom: 10px;
+      }
 
-    .review {
-      position: relative;
-      float: left;
-      margin: 10px 10px 20px 10px;
-      height: auto;
-      width: 50%;
-      border: 2px solid black;
-      margin-bottom: 10px;
-    }
+      .playtime {
+        float: right;
+        font-weight: normal;
+        margin-right: 10px;
+      }
 
-    .playtime {
-      float: right;
-      font-weight: normal;
-      margin-right: 10px;
-    }
+      .votes_up {
+        float: left;
+        font-weight: normal;
+        margin-left: 10px;
+      }
 
-    .votes_up {
-      float: left;
-      font-weight: normal;
-      margin-left: 10px;
-    }
+      .votes_funny {
+        float: left;
+        font-weight: normal;
+        margin-left: 10px;
+      }
 
-    .votes_funny {
-      float: left;
-      font-weight: normal;
-      margin-left: 10px;
-    }
+      .textbox {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 2;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
 
-    .textbox {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      z-index: 2;
-      background-color: rgba(0, 0, 0, 0.8);
-    }
+      .login_button {
+        float: right;
+        margin: 20px 20px auto auto;
+      }
+    </style>
 
-    .login_button {
-      float: right;
-      margin: 20px 20px auto auto;
-    }
-  </style>
-
-  <script type="text/javascript">
-    // 페이지 로딩하자마자 실행할 함수
-    const spinner = `
+    <script type="text/javascript">
+      // 페이지 로딩하자마자 실행할 함수
+      const spinner = `
       <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      `
-    $(document).ready(function () {
-      // 로그인
-      isLogin();
+      `;
+      $(document).ready(function () {
+        // 로그인
+        isLogin();
 
-      // 추천배너
-      // showRecommendedGames();
+        // 추천배너
+        // showRecommendedGames();
 
-      // search -> index 돌아올때 localStorge 읽기
-      if (localStorage.getItem('data')) {
-        render_games()
+        // search -> index 돌아올때 localStorge 읽기
+        if (localStorage.getItem("data")) {
+          render_games();
+        }
+      });
+
+      // Enter key to search
+      function enterkey() {
+        if (window.event.keyCode == 13) {
+          check();
+        }
       }
-    });
 
-    // Enter key to search
-    function enterkey() {
-      if (window.event.keyCode == 13) {
-        check();
+      function sign_out() {
+        $.removeCookie("Bearer", { path: "/" });
+        alert("로그아웃");
+        window.location.href = "/";
       }
-    }
 
-    function sign_out() {
-      $.removeCookie("Bearer", { path: "/" });
-      alert("로그아웃");
-      window.location.href = "/";
-    }
-
-    // login or logout button
-    function isLogin() {
-      const cookie = $.cookie("Bearer");
-      let temp_html;
-      if (cookie) {
-        temp_html = `<input type="submit" value="로그아웃" onclick="sign_out()" class="login_button">`;
-      } else {
-        temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'" class="login_button">`;
+      // login or logout button
+      function isLogin() {
+        const cookie = $.cookie("Bearer");
+        let temp_html;
+        if (cookie) {
+          temp_html = `<input type="submit" value="로그아웃" onclick="sign_out()" class="login_button">`;
+        } else {
+          temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'" class="login_button">`;
+        }
+        $("#isLogin").append(temp_html);
       }
-      $("#isLogin").append(temp_html);
-    }
 
-    // check input
-    function check() {
-      var search = document.querySelector("#search").value;
-      if (search == "") {
-        alert("검색어를 입력해주세요");
-        event.preventDefault();
-      } else {
-        show_games();
+      // check input
+      function check() {
+        var search = document.querySelector("#search").value;
+        if (search == "") {
+          alert("검색어를 입력해주세요");
+          event.preventDefault();
+        } else {
+          show_games();
+        }
       }
-    }
-    // search -> index
-    function render_games() {
-      const Data = JSON.parse(localStorage.getItem('data'))
-      console.log(Data)
-      $.ajax({
-        type: "POST",
-        url: `/search`,
-        data: {
-          'keyword': `${Data.keyword}`,
-          'slice_start': `0`
-        },
-        success: function (response) {
-          $("#carouselExampleFade").empty();
-          $("#bundle").empty();
-          response = response.data
-          if (!response.length) {
-            let temp_html = `
+      // search -> index
+      function render_games() {
+        const Data = JSON.parse(localStorage.getItem("data"));
+        console.log(Data);
+        $.ajax({
+          type: "POST",
+          url: `/search`,
+          data: {
+            keyword: `${Data.keyword}`,
+            slice_start: `0`,
+          },
+          success: function (response) {
+            $("#carouselExampleFade").empty();
+            $("#bundle").empty();
+            response = response.data;
+            if (!response.length) {
+              let temp_html = `
             <div class="name">
               <h3>~검색결과 없음~</h3>
             </div>
-            `
-            $("#game-list").append(temp_html);
-            return;
-          }
-          appending(response)
-          localStorage.removeItem("data");
-        },
-      });
-    }
-    // search
-    function show_games(count) {
-      // console.time('for');
-      if (!count) $("#game-list").empty();
-      $("#bundle").empty();
-      $("#bundle").append(spinner)
-      if (!count) count = 0
-      let keyword = $("#search").val();
-      $.ajax({
-        type: "POST",
-        url: `/search`,
-        data: {
-          'keyword': `${keyword}`,
-          'slice_start': `${count}`
-        },
-        success: function (response) {
-          $("#carouselExampleFade").empty();
-          $("#bundle").empty();
-          response = response.data
-          if (!response.length) {
-            let temp_html = `
+            `;
+              $("#game-list").append(temp_html);
+              return;
+            }
+            appending(response);
+            localStorage.removeItem("data");
+          },
+        });
+      }
+      // search
+      function show_games(count) {
+        // console.time('for');
+        if (!count) $("#game-list").empty();
+        $("#bundle").empty();
+        $("#bundle").append(spinner);
+        if (!count) count = 0;
+        let keyword = $("#search").val();
+        $.ajax({
+          type: "POST",
+          url: `/search`,
+          data: {
+            keyword: `${keyword}`,
+            slice_start: `${count}`,
+          },
+          success: function (response) {
+            $("#carouselExampleFade").empty();
+            $("#bundle").empty();
+            response = response.data;
+            if (!response.length) {
+              let temp_html = `
             <div class="name">
               <h3>~검색결과 없음~</h3>
             </div>
-            `
-            $("#game-list").append(temp_html);
-            return;
-          }
-          appending(response)
-        },
-      });
-    }
+            `;
+              $("#game-list").append(temp_html);
+              return;
+            }
+            appending(response);
+          },
+        });
+      }
 
-
-    function appending(response) {
-      for (let i = 0; i < response.length; i++) {
-        let temp_html = `
+      function appending(response) {
+        for (let i = 0; i < response.length; i++) {
+          let temp_html = `
                     <div class="card mb-3" style="max-width: 1010px;" id="game">
                       <div class="row g-0">
                         <div class="col-md-4" 
-                        onclick="location.href='/search/render/appid?appid=${response[i]._source.appid}&name=${response[i]._source.name}'" 
+                        onclick="location.href='/search/render/appid?appid=${
+                          response[i]._source.appid
+                        }&name=${response[i]._source.name}'" 
                         style="cursor:pointer;display:flex;justify-content;align-items: center">
-                          <img style="height: 156px" src="${response[i]["_source"]['img_url'] || "http://localhost:3000/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
+                          <img style="height: 156px" src="${
+                            response[i]["_source"]["img_url"] ||
+                            "http://localhost:3000/images/ready.jpg"
+                          }" class="img-fluid rounded-start" alt="..." >
                         </div>
                         <div class="col-md-8">
                           <div class="card-body">
-                            <h5 class="card-title">${response[i]["_source"]["name"]}</h5>
-                            <p class="card-text">평가: ${response[i]["_source"]["review_score_desc"]}</p>
-                            <p class="card-text"><small class="text-muted">${response[i]["_source"]["short_description"]}</small></p>
+                            <h5 class="card-title">${
+                              response[i]["_source"]["name"]
+                            }</h5>
+                            <p class="card-text">평가: ${
+                              response[i]["_source"]["review_score_desc"]
+                            }</p>
+                            <p class="card-text"><small class="text-muted">${
+                              response[i]["_source"]["short_description"]
+                            }</small></p>
                           </div>
                         </div>
                       </div>
-                    </div>`
-        $("#game-list").append(temp_html)
-      }
-      if (response.length >= 30) {
-        let count = document.querySelectorAll('#game').length
-        $("#bundle").append(
-          `<div class="d-grid gap-2">
+                    </div>`;
+          $("#game-list").append(temp_html);
+        }
+        if (response.length >= 30) {
+          let count = document.querySelectorAll("#game").length;
+          $("#bundle").append(
+            `<div class="d-grid gap-2">
                 <button class="btn btn-dark" type="button" onclick="show_games(${count})" style="margin-bottom: 20px">30개 더보기</button>
-              </div>`)
+              </div>`
+          );
+        }
       }
-    }
-    // 추천게임 배너
-    // let showRecommendedGames = () => {
-    //   $.ajax({
-    //     type: "GET",
-    //     url: `/analyze/best`,
-    //     data: {},
-    //     success: function (response) {
-    //       if (!response) return;
-    //       const randomArray = response.best_list.sort(() => 0.5 - Math.random())
-    //       const array = []
-    //       for (let i = 0; i < 3; i++) {
-    //         array.push(randomArray[i])
-    //       }
-    //       let temp_html =
-    //         ` <div class="carousel-inner">
-    //             <div class="carousel-item active">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[0].appid}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[0].appid}')" style="cursor:pointer;">${array[0].name}</h3>
-    //                 <p>
-    //                   장르: ${array[0].genre} /
-    //                   리뷰 총점: ${array[0].review_score} /
-    //                   평가: ${array[0].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //             <div class="carousel-item">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[1].appid}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[1].appid}')" style="cursor:pointer;">${array[1].name}</h3>
-    //                 <p>
-    //                   장르: ${array[1].genre} /
-    //                   리뷰 총점: ${array[1].review_score} /
-    //                   평가: ${array[1].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //             <div class="carousel-item">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[2].appid}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[2].appid}')" style="cursor:pointer;">${array[2].name}</h3>
-    //                 <p>
-    //                   장르: ${array[2].genre} /
-    //                   리뷰 총점: ${array[2].review_score} /
-    //                   평가: ${array[2].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //           </div>
-    //           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
-    //             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    //             <span class="visually-hidden">Previous</span>
-    //           </button>
-    //           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
-    //             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    //             <span class="visually-hidden">Next</span>
-    //           </button>`;
+      // 추천게임 배너
+      // let showRecommendedGames = () => {
+      //   $.ajax({
+      //     type: "GET",
+      //     url: `/analyze/best`,
+      //     data: {},
+      //     success: function (response) {
+      //       if (!response) return;
+      //       const randomArray = response.best_list.sort(() => 0.5 - Math.random())
+      //       const array = []
+      //       for (let i = 0; i < 3; i++) {
+      //         array.push(randomArray[i])
+      //       }
+      //       let temp_html =
+      //         ` <div class="carousel-inner">
+      //             <div class="carousel-item active">
+      //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+      //               <img onclick="show_reviews_appid('${array[0].appid}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+      //               <div style="text-align: center;">
+      //                 <h3 onclick="show_reviews_appid('${array[0].appid}')" style="cursor:pointer;">${array[0].name}</h3>
+      //                 <p>
+      //                   장르: ${array[0].genre} /
+      //                   리뷰 총점: ${array[0].review_score} /
+      //                   평가: ${array[0].review_score_desc}
+      //                 </p>
+      //               </div>
+      //                 </div>
+      //             <div class="carousel-item">
+      //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+      //               <img onclick="show_reviews_appid('${array[1].appid}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+      //               <div style="text-align: center;">
+      //                 <h3 onclick="show_reviews_appid('${array[1].appid}')" style="cursor:pointer;">${array[1].name}</h3>
+      //                 <p>
+      //                   장르: ${array[1].genre} /
+      //                   리뷰 총점: ${array[1].review_score} /
+      //                   평가: ${array[1].review_score_desc}
+      //                 </p>
+      //               </div>
+      //                 </div>
+      //             <div class="carousel-item">
+      //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+      //               <img onclick="show_reviews_appid('${array[2].appid}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+      //               <div style="text-align: center;">
+      //                 <h3 onclick="show_reviews_appid('${array[2].appid}')" style="cursor:pointer;">${array[2].name}</h3>
+      //                 <p>
+      //                   장르: ${array[2].genre} /
+      //                   리뷰 총점: ${array[2].review_score} /
+      //                   평가: ${array[2].review_score_desc}
+      //                 </p>
+      //               </div>
+      //                 </div>
+      //           </div>
+      //           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+      //             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      //             <span class="visually-hidden">Previous</span>
+      //           </button>
+      //           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+      //             <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      //             <span class="visually-hidden">Next</span>
+      //           </button>`;
 
-    //       $("#carouselExampleFade").append(temp_html);
-    //     },
-    //   });
-    // }
+      //       $("#carouselExampleFade").append(temp_html);
+      //     },
+      //   });
+      // }
+    </script>
+  </head>
 
-  </script>
-</head>
+  <body>
+    <section
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+      id="isLogin"
+    ></section>
+    <section
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <h1 class="title"><a href="/">Steam Search Service</a></h1>
+      <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
 
-<body>
-  <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;" id="isLogin">
-  </section>
-  <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
-    <h1 class="title"><a href="/">Steam Search Service</a></h1>
-    <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
+      <!-- <form method="get" action="search"> -->
+      <p>
+        <input
+          type="text"
+          placeholder="검색어를 입력하세요.."
+          id="search"
+          onkeyup="enterkey();"
+          style="width: 500px"
+        />
+        <input id="submit" type="submit" value="검색" onclick="check()" />
+      </p>
+    </section>
 
-    <!-- <form method="get" action="search"> -->
-    <p>
-      <input type="text" placeholder="검색어를 입력하세요.." id="search" onkeyup="enterkey();" style="width: 500px;" />
-      <input id="submit" type="submit" value="검색" onclick="check()" />
-  </section>
-  <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
-    <div style="width: 1010px" id="game-list">
-    </div>
-    <div id="bundle" style="width: 1010px"></div>
-    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel"
-      style="margin-bottom: 20px;"></div>
-  </section>
-  <!-- </form> -->
+    <section
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div style="width: 1010px" id="game-list"></div>
+      <div id="bundle" style="width: 1010px"></div>
+      <div
+        id="carouselExampleFade"
+        class="carousel slide carousel-fade"
+        data-bs-ride="carousel"
+        style="margin-bottom: 20px"
+      ></div>
+    </section>
+    <!-- </form> -->
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-    crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 
-<script></script>
-
+  <script></script>
 </html>
