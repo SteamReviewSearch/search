@@ -1,42 +1,45 @@
 const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
-const { Games, Reviews, Metascores } = require("../../models");
-const { Op } = require("sequelize");
-let { errorLog } = require("../middlewares/log/error_logger");
-const fs = require("fs").promises;
 let { search } = require("../middlewares/log/search_logger");
 let { search_result } = require("../middlewares/log/search_result_logger");
-const path = require("path");
-const Sequelize = require("sequelize");
-
 module.exports = class SteamSearchController {
   gamesRepository = new GamesRepository();
   reviewsRepository = new ReviewsRepository();
 
   steamSearch = async ({ keywords, slice_start }) => {
     try {
-      // 게임 옵션
       let option_keywords = {
         from: slice_start,
         size: 30,
-        index: "game_data",
+        index: "games_data",
         body: {
           query: {
             bool: {
               must: [
-                { match: { name: keywords } },
-                { exists: { field: "short_description" } },
+                {
+                  match: {
+                    "name.ngrams": {
+                      query: keywords,
+                      fuzziness: 2, // 오타 검색이 가능해짐
+                    },
+                  },
+                },
+                { exists: { field: "img_url" } },
+                { exists: { field: "review_score_desc" } },
+              ],
+              should: [
+                { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
+                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사
+                { match: { "name.standard": keywords } }, // 노말 검색 up
+                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
+                { match: { type: "game" } }, // type이 game이면 +
               ],
             },
           },
         },
       };
-      // console.log(option_keywords)
       const game_list = await this.gamesRepository.findWithES(option_keywords);
-      // let games = [];
-      // for (let i = 0; i < game_list.hits.hits.length; i++) {
-      //     games.push(game_list.hits.hits[i]._source.appid + "");
-      // }
+      // console.log(game_list)
       return game_list.hits.hits;
     } catch (error) {
       console.log(error);
@@ -44,13 +47,25 @@ module.exports = class SteamSearchController {
     }
   };
 
-  steamAppidSearch = async ({ appid, slice_start, filter, filterExists }) => {
+  steamAppidSearch = async ({
+    appid,
+    slice_start,
+    filter,
+    filterExists,
+    sort,
+  }) => {
     try {
-      const option_appid = {
+      const game_option = {
+        index: "games_data",
+        id: appid,
+      };
+      const game_doc = await this.gamesRepository.getWithES(game_option);
+      const review_option = {
         from: slice_start,
         size: 30,
-        index: "review_data",
+        index: "reviews_datas",
         body: {
+          sort,
           query: {
             bool: {
               must: [{ match: { appid } }],
@@ -58,6 +73,7 @@ module.exports = class SteamSearchController {
           },
         },
       };
+      // console.log(review_option.body.sort)
       // 필터 넣어주기
       if (filterExists) {
         let array = [];
@@ -71,7 +87,7 @@ module.exports = class SteamSearchController {
             array.push(obj1);
           }
         }
-        option_appid.body.query.bool["filter"] = array;
+        review_option.body.query.bool["filter"] = array;
       }
 
       const review_list = await this.gamesRepository.findWithES(option_appid);
@@ -90,17 +106,20 @@ module.exports = class SteamSearchController {
           return game._source.appid;
         });
       }
-      search.info({
-        label: "GET:req /api/search/keyword",
-        message: id + "-" + keywords,
-      });
-
       if (typeof keywords === "object") {
+        search.info({
+          label: "GET:req /api/search/keyword",
+          message: id + "-appid:" + keywords.value,
+        });
         search_result.info({
           label: "GET:req /api/search/list",
           message: "userid:" + id + " appids:" + appids + " only:true",
         });
       } else {
+        search.info({
+          label: "GET:req /api/search/keyword",
+          message: id + "-" + keywords,
+        });
         search_result.info({
           label: "GET:req /api/search/list",
           message: "userid:" + id + " appids:" + appids + " only:false",
@@ -110,13 +129,43 @@ module.exports = class SteamSearchController {
       throw error;
     }
   };
-};
 
-let options = (option, index) => {
-  return {
-    index: index,
-    body: {
-      query: option,
-    },
+  searchAutocomplete = async ({ value }) => {
+    try {
+      let option_keywords = {
+        from: 0,
+        size: 10,
+        _source: ["appid", "name", "img_url"],
+        index: "games_data",
+        body: {
+          query: {
+            bool: {
+              must: [
+                {
+                  match: {
+                    "name.autocomplete": {
+                      query: value,
+                      fuzziness: 2, // 오타 검색이 가능해짐 -- 그럼 ngram아니어도 이거면 되는거 아냐? 어?
+                    },
+                  },
+                },
+                { exists: { field: "img_url" } }, // 이미지가 있어야함
+                { exists: { field: "review_score_desc" } }, // 리뷰가 존재해야함
+              ],
+              should: [
+                { prefix: { "name.standard": { value: value } } },
+                { match: { "name.standard": value } }, // 노말 검색 up
+                { match: { type: "game" } }, // type이 game이면 +
+              ],
+            },
+          },
+        },
+      };
+      const game_list = await this.gamesRepository.findWithES(option_keywords);
+      // console.log(game_list.hits.hits)
+      return game_list.hits.hits;
+    } catch (error) {
+      console.log(error);
+    }
   };
 };

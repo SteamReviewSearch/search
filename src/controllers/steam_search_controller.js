@@ -1,9 +1,9 @@
 const SteamSearchService = require("../services/steam_search_service");
-const redisClient = require("../../redis_connection");
+const Func = require("../routes/func");
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
-
+  func = new Func();
   steamSearch = async (req, res, next) => {
     try {
       // await redisClient.connect();
@@ -21,14 +21,6 @@ module.exports = class SteamSearchController {
           return res.json({ data });
         } else next();
       });
-
-      const list = await this.steamSearchService.steamSearch({
-        keywords,
-        slice_start,
-      });
-      //레디스에 저장하기
-
-      await redisClient.set(key, list.toString());
 
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
@@ -89,49 +81,31 @@ module.exports = class SteamSearchController {
       let request;
       if (req.query.appid) request = req.query;
       else request = req.body;
-      const { appid, slice_start, filterExists, filter } = request;
-      console.log(appid, slice_start, filterExists, filter);
+      const { appid, slice_start, filterExists, filter, sort } = request;
+
       if (filterExists === undefined) {
-        const list = await this.steamSearchService.steamAppidSearch({
-          appid,
-          slice_start,
-          filterExists,
-        });
-        res.json({ data: list });
+        const { reviews, game_doc } =
+          await this.steamSearchService.steamAppidSearch({
+            appid,
+            slice_start,
+            filterExists,
+            sort,
+          });
+
+        res.json({ game_doc, data: reviews });
       } else {
-        const list = await this.steamSearchService.steamAppidSearch({
-          appid,
-          slice_start,
-          filter,
-          filterExists,
-        });
-        res.json({ data: list });
+        const { reviews, game_doc } =
+          await this.steamSearchService.steamAppidSearch({
+            appid,
+            slice_start,
+            filter,
+            filterExists,
+            sort,
+          });
+        res.json({ game_doc, data: reviews });
       }
+
       let keywords = { type: "onething", value: appid };
-      // appid로 검색하는 경우라 키워드를 저장하지 못함.
-      if (id !== undefined) {
-        await this.steamSearchService.searchLogger({ id, appid, list });
-      }
-      console.timeEnd("for");
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  steamAppidSearchRender = async (req, res, next) => {
-    try {
-      // console.time('for');   // 시작
-      const id = res.locals.id;
-
-      const { appid, name } = req.query;
-      // keyword is appid
-      const slice_start = 0;
-      const list = await this.steamSearchService.steamAppidSearch({
-        appid,
-        slice_start,
-      });
-
-      let keywords = { type: "onething", value: list[0]._source.name };
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({
@@ -140,12 +114,44 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      // console.timeEnd('for');
+      console.timeEnd("for");
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  };
+
+  steamAppidSearchRender = async (req, res, next) => {
+    try {
+      console.time("for"); // 시작
+      const id = res.locals.id;
+
+      const { appid, name } = req.query;
+      // keyword is appid
+      const slice_start = 0;
+      const sort = [{ weighted_vote_score: "desc" }];
+      const { reviews, game_doc } =
+        await this.steamSearchService.steamAppidSearch({
+          appid,
+          slice_start,
+          sort,
+        });
+      let keywords = { type: "onething", value: appid };
+      // appid로 검색하는 경우라 키워드를 저장하지 못함.
+      if (id !== undefined) {
+        await this.steamSearchService.searchLogger({
+          id,
+          keywords,
+          list: appid,
+        });
+      }
+      console.timeEnd("for");
       return res.render("search", {
         result: true,
-        data: list,
+        data: reviews,
+        game_doc,
         name,
-        appid,
+        func: this.func,
       });
     } catch (error) {
       console.log(error);
@@ -155,13 +161,11 @@ module.exports = class SteamSearchController {
       });
     }
   };
-  autoComplete = async (req, res, next) => {
-    try {
-      const { keyWord } = req.query;
-      let response = await this.steamSearchService.autoComplete(keyWord);
-      res.json(response);
-    } catch (error) {
-      next(error);
-    }
+
+  searchAutocomplete = async (req, res) => {
+    const { value } = req.body;
+    // console.log(value)
+    const list = await this.steamSearchService.searchAutocomplete({ value });
+    res.json(list);
   };
 };
