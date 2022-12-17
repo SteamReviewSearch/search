@@ -11,7 +11,7 @@
 
 ### 확보한 데이터
 - 게임 리스트: 스팀에서 판매하는 15만여개의 게임 리스트
-- 게임 리뷰 리스트: 각 appid를 가진 리뷰 리스트 3만여개. 추후 최대 1000만개까지 수집 예정
+- 게임 리뷰 리스트: 각 appid를 가진 리뷰 리스트 300만여개.
   - 언어: 한국어, 영어
   
 ## 기술 스택 
@@ -28,9 +28,11 @@
 <img src='https://github.com/SteamReviewSearch/.github/blob/main/image/diagram.drawio%20(1).png'>
 
 
-## ERD
- 공사중
-
+## ERD + Mapping
+### MySQL 
+user data
+![image](https://user-images.githubusercontent.com/113815932/208244512-4f29088f-d834-46f6-a94e-df5ed1ada8d5.png)
+### ElasticSearch --> https://www.notion.so/DB-78cc2d2be6d34946947a9449b8d26d66
 
 ## Project Setting
 ### Cord_Start
