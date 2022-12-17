@@ -30,7 +30,6 @@
 
 ## ERD + Mapping
 ### MySQL 
-user data
 ![image](https://user-images.githubusercontent.com/113815932/208244512-4f29088f-d834-46f6-a94e-df5ed1ada8d5.png)
 ### ElasticSearch --> https://www.notion.so/DB-78cc2d2be6d34946947a9449b8d26d66
 
